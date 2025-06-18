@@ -56,7 +56,7 @@ export class LoginPage {
           localStorage.setItem('user', JSON.stringify(res.user));
 
           this.showToast('Login berhasil');
-          this.router.navigateByUrl('/home', { replaceUrl: true });
+          this.router.navigateByUrl('/tabs/home', { replaceUrl: true });
         } else {
           this.showToast('Login gagal');
         }
