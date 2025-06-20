@@ -13,7 +13,20 @@ const routes: Routes = [
       },
       {
         path: 'input',
-        loadChildren: () => import('../input/input.module').then(m => m.InputPageModule)
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../input/input.module').then(m => m.InputPageModule)
+          },
+          {
+            path: 'production-generate',
+            loadChildren: () => import('../production-generate/production-generate.module').then(m => m.ProductionGeneratePageModule)
+          },
+          {
+            path: 'production-edit',
+            loadChildren: () => import('../production-edit/production-edit.module').then(m => m.ProductionEditPageModule)
+          }
+        ]
       },
       {
         path: 'riwayat',
@@ -31,6 +44,7 @@ const routes: Routes = [
     ]
   }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-input',
@@ -7,12 +9,19 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./input.page.scss'],
   standalone: false,
 })
-export class InputPage {
+export class InputPage implements OnInit {
   productionForm: FormGroup;
   isSuccessModalOpen = false;
   charCount = 0;
+  selectedDate: string = new Date().toISOString();
+  shifts: any[] = [];
+  lines: any[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private router: Router,
+  ) {
     this.productionForm = this.fb.group({
       productionDate: [null, Validators.required],
       shift: [null, Validators.required],
@@ -24,6 +33,64 @@ export class InputPage {
       rejectUnits: [null, Validators.required],
       qualityLevel: [null, Validators.required],
     });
+  }
+
+  ngOnInit() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+
+    this.getShiftData();
+    this.getLines(); 
+  }
+
+  getShiftData() {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      console.error('Token tidak ditemukan. User mungkin belum login.');
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+
+    this.http.get<any>('https://riza-bakery.my.id/api/shift/get_data', { headers }).subscribe({
+      next: (res) => {
+        this.shifts = res.data ?? res;
+      },
+      error: (err) => {
+        console.error('Gagal mengambil data shift:', err);
+      }
+    });
+  }
+
+    getLines() {
+    const token = localStorage.getItem('access_token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    this.http.get<any>('https://riza-bakery.my.id/api/line/get_data', { headers }).subscribe({
+      next: (res) => {
+        this.lines = res.data ?? [];
+      },
+      error: (err) => {
+        console.error('Gagal mengambil data line:', err);
+      }
+    });
+  }
+
+  selectLine(lineId: number) {
+    this.productionForm.get('productionLine')?.setValue(lineId);
+    console.log('Line ID terpilih:', lineId);
+  }
+
+  onDateChange(event: any) {
+    this.selectedDate = event.detail.value;
+    this.productionForm.get('productionDate')?.setValue(this.selectedDate);
+    console.log('Selected date:', this.selectedDate);
   }
 
   updateCharCount() {
@@ -41,5 +108,53 @@ export class InputPage {
     this.isSuccessModalOpen = false;
     this.productionForm.reset();
     this.charCount = 0;
+  }
+
+  refreshData() {
+    const token = localStorage.getItem('access_token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const rawDate = this.productionForm.get('productionDate')?.value;
+    const date = new Date(rawDate).toISOString().split('T')[0];
+    const shift_id = this.productionForm.get('shift')?.value;
+
+    if (!date || !shift_id) {
+      alert('Pilih tanggal dan shift terlebih dahulu');
+      return;
+    }
+
+    this.http.post<any>('https://riza-bakery.my.id/api/production/select', {
+      date,
+      shift_id,
+    }, { headers }).subscribe({
+      next: (res) => {
+        this.lines = res.data ?? [];
+      },
+      error: (err) => {
+        console.error('Gagal ambil data:', err);
+      }
+    });
+  }
+
+  navigateLine(line: any) {
+    const rawDate = this.productionForm.get('productionDate')?.value;
+    const date = new Date(rawDate).toISOString().split('T')[0];
+    const shift_id = this.productionForm.get('shift')?.value;
+    
+    if (line.exists) {
+      // Edit Production Data
+      this.router.navigate(['/tabs/input/production-edit', {
+        line_id: line.id,
+        shift_id,
+        date
+      }]);
+    } else {
+      // Generate Production Data
+      this.router.navigate(['/tabs/input/production-generate', {
+        line_id: line.id,
+        shift_id,
+        date
+      }]);
+    }
   }
 }

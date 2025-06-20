@@ -8,6 +8,7 @@
  * For more information on global stylesheets, visit the documentation:
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
+// @import 'bootstrap/scss/bootstrap';
 
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
@@ -32,36 +33,13 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+// @import "@ionic/angular/css/palettes/dark.always.css";
+// @import "@ionic/angular/css/palettes/dark.class.css";
+// @import "@ionic/angular/css/palettes/dark.system.css";
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap');
 
 
-body {
-  font-family: 'Inter', sans-serif;
-}
-
-.dark-mode {
-  ion-content {
-    --background: #121212;
-  }
-
-  .login-card {
-    background: #1e1e1e;
-    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.05);
-  }
-
-  .logo span {
-    color: var(--ion-color-primary);
-  }
-
-  .logo h1, .logo p {
-    color: #e0e0e0;
-  }
-
-  ion-item {
-    background: #2a2a2a;
-  }
+ion-content {
+  --background: pink;
 }

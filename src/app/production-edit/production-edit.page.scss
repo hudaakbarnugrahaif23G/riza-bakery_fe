@@ -1,0 +1,22 @@
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-bordered {
+  width: max-content;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.table-striped tbody tr:nth-child(even) {
+  background-color: #f8f8f8; /* Warna selang-seling */
+}
+.table-striped tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}

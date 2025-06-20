@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Generate Data Production</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div style="margin-left: 14px">
+    <ion-button color="medium" size="small" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      Back</ion-button
+    >
+  </div>
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="productionForm">
+        <ion-input
+          formControlName="shift"
+          label="Shift"
+          label-placement="floating"
+          fill="solid"
+          placeholder="Enter text"
+          readonly
+        ></ion-input>
+
+        <br />
+
+        <ion-input
+          formControlName="date"
+          label="Date"
+          label-placement="floating"
+          fill="solid"
+          placeholder="Enter text"
+          readonly
+        ></ion-input>
+
+        <br />
+
+        <ion-input
+          formControlName="line"
+          label="Line"
+          label-placement="floating"
+          fill="solid"
+          placeholder="Enter text"
+          readonly
+        ></ion-input>
+
+        <br />
+
+        <ion-input
+          formControlName="pic"
+          label="PIC"
+          label-placement="floating"
+          fill="solid"
+          placeholder="Enter text"
+          readonly
+        ></ion-input>
+
+        <br />
+
+        <ion-input
+          formControlName="cycle_time"
+          label="Cycle Time"
+          label-placement="floating"
+          fill="solid"
+          placeholder="Enter text"
+          readonly
+        ></ion-input>
+
+        <br />
+
+        <ion-input
+          formControlName="target"
+          label="Target"
+          label-placement="floating"
+          fill="solid"
+          placeholder="Enter text"
+          readonly
+        ></ion-input>
+
+        <br />
+
+        <div class="ion-text-end">
+          <ion-button color="success" (click)="submitProduction()"
+            >Generate</ion-button
+          >
+        </div>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
