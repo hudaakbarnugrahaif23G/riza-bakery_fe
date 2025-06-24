@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Select Data Production</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Daily Production Entry</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="productionForm">
+        <!-- Tanggal -->
+        <ion-datetime
+          presentation="date"
+          display-format="YYYY-MM-DD"
+          placeholder="Select Date"
+          (ionChange)="onDateChange($event)"
+        ></ion-datetime>
+
+        <br />
+
+        <!-- Shift -->
+        <ion-item>
+          <ion-select
+            label="Shift"
+            placeholder="Pilih Shift"
+            formControlName="shift"
+          >
+            <ion-select-option *ngFor="let shift of shifts" [value]="shift.id">
+              {{ shift.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <br />
+        <!-- Tombol-tombol Line -->
+        <ion-label class="ion-margin-top">Pilih Line Produksi:</ion-label>
+        <div *ngFor="let line of lines" class="ion-margin-top">
+          <ion-button
+            expand="block"
+            [fill]="line.exists ? 'solid' : 'outline'"
+            [color]="line.exists ? 'success' : 'primary'"
+            (click)="navigateLine(line)"
+          >
+            {{ line.line_name }}
+          </ion-button>
+        </div>
+
+        <!-- (Opsional) Tampilkan ID line yang dipilih -->
+        <ion-text
+          color="success"
+          *ngIf="productionForm.get('productionLine')?.value"
+        >
+          Line ID terpilih: {{ productionForm.get('productionLine')?.value }}
+        </ion-text>
+        <br />
+        <ion-button expand="full" (click)="refreshData()"
+          >Refresh Data</ion-button
+        >
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Input Gudang</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Tambah Stok Warehouse</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-select
+          label="Material"
+          placeholder="Pilih"
+          [(ngModel)]="selectedMaterialId"
+        >
+          <ion-select-option *ngFor="let item of materials" [value]="item.id">
+            {{ item.material_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <br />
+
+      <ion-input
+        label="Tambah stock"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Enter stock in"
+        [(ngModel)]="stockIn"
+        type="number"
+      ></ion-input>
+
+      <div class="ion-text-end">
+        <ion-button color="success" (click)="submit()">Submit</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

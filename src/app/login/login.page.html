@@ -1,0 +1,55 @@
+<ion-content [fullscreen]="true" [class.dark-mode]="isDarkMode">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo">
+        <span>RB</span>
+        <h1>Data Warehouse Produksi</h1>
+        <p>Masuk untuk melanjutkan</p>
+      </div>
+      <form (ngSubmit)="onLogin()" [formGroup]="loginForm">
+        <ion-item lines="none">
+          <ion-icon
+            name="person-outline"
+            slot="start"
+            style="color: black"
+          ></ion-icon>
+          <ion-input
+            placeholder="Masukkan NIK Anda"
+            formControlName="nik"
+            style="color: black"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon
+            name="lock-closed-outline"
+            slot="start"
+            style="color: black"
+          ></ion-icon>
+          <ion-input
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Masukkan password Anda"
+            formControlName="password"
+            style="color: black"
+            required
+          ></ion-input>
+          <ion-button
+            fill="clear"
+            slot="end"
+            (click)="togglePassword()"
+            size="small"
+          >
+            <ion-icon
+              [name]="showPassword ? 'eye-outline' : 'eye-off-outline'"
+            ></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" color="primary">
+          Masuk
+        </ion-button>
+      </form>
+    </div>
+  </div>
+</ion-content>

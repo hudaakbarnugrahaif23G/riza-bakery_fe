@@ -1,0 +1,139 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Input Produksi</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="submitForm()">
+        <ion-icon name="save-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form [formGroup]="productionForm" (ngSubmit)="submitForm()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Informasi Dasar</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Tanggal Produksi</ion-label>
+          <ion-datetime
+            formControlName="productionDate"
+            presentation="date"
+          ></ion-datetime>
+        </ion-item>
+        <form [formGroup]="productionForm" (ngSubmit)="submitForm()">
+          <ion-item>
+            <ion-label position="floating">Shift</ion-label>
+            <ion-select formControlName="shift" interface="popover">
+              <!-- interface opsional -->
+              <ion-select-option value="1">Shift 1</ion-select-option>
+              <ion-select-option value="2">Shift 2</ion-select-option>
+              <ion-select-option value="3">Shift 3</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </form>
+
+        <ion-item>
+          <ion-label position="floating">Lini Produksi</ion-label>
+          <ion-select formControlName="productionLine">
+            <ion-select-option value="1">Lini 1</ion-select-option>
+            <ion-select-option value="2">Lini 2</ion-select-option>
+            <ion-select-option value="3">Lini 3</ion-select-option>
+            <ion-select-option value="4">Lini 4</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Detail Produksi</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Jumlah Unit</ion-label>
+          <ion-input
+            type="number"
+            formControlName="productionUnits"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Bahan Terpakai (kg)</ion-label>
+          <ion-input
+            type="number"
+            step="0.01"
+            formControlName="materialUsed"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Status Produksi</ion-label>
+          <ion-select formControlName="productionStatus">
+            <ion-select-option value="running">Berjalan</ion-select-option>
+            <ion-select-option value="completed">Selesai</ion-select-option>
+            <ion-select-option value="paused">Ditunda</ion-select-option>
+            <ion-select-option value="failed">Gagal</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Catatan Proses</ion-label>
+          <ion-textarea
+            formControlName="processNotes"
+            (ionInput)="updateCharCount()"
+            maxlength="500"
+          ></ion-textarea>
+        </ion-item>
+        <div class="ion-text-end text-xs mt-1">{{charCount}}/500</div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Pemeriksaan Kualitas</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Jumlah Produk Reject</ion-label>
+          <ion-input type="number" formControlName="rejectUnits"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Tingkat Kualitas</ion-label>
+          <ion-select formControlName="qualityLevel">
+            <ion-select-option value="excellent">Sangat Baik</ion-select-option>
+            <ion-select-option value="good">Baik</ion-select-option>
+            <ion-select-option value="fair">Cukup</ion-select-option>
+            <ion-select-option value="poor">Kurang</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button
+      expand="block"
+      type="submit"
+      [disabled]="productionForm.invalid"
+    >
+      Simpan Data Produksi
+    </ion-button>
+  </form>
+  <!-- Modal -->
+  <ion-modal [isOpen]="isSuccessModalOpen" (didDismiss)="closeSuccessModal()">
+    <ng-template>
+      <ion-content class="ion-padding">
+        <ion-icon
+          name="checkmark-circle-outline"
+          class="success-icon"
+        ></ion-icon>
+        <h2 class="ion-text-center">Data berhasil disimpan!</h2>
+        <ion-button expand="block" (click)="closeSuccessModal()"
+          >Tutup</ion-button
+        >
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

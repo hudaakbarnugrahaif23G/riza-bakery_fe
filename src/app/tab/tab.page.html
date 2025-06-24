@@ -1,0 +1,41 @@
+<ion-tabs>
+  <!-- <ion-router-outlet></ion-router-outlet> -->
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home" href="/tabs/home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Beranda</ion-label>
+    </ion-tab-button>
+    <ng-container *ngIf="role === 'produksi'; else qcGudangTemplate">
+      <ion-tab-button tab="input" href="/tabs/input">
+        <ion-icon name="pencil-outline"></ion-icon>
+        <ion-label>Input Produksi</ion-label>
+      </ion-tab-button>
+    </ng-container>
+
+    <ng-template #qcGudangTemplate>
+      <ng-container *ngIf="role === 'qc'; else gudangTemplate">
+        <ion-tab-button tab="input_qc" href="/tabs/input_qc">
+          <ion-icon name="pencil-outline"></ion-icon>
+          <ion-label>Input QC</ion-label>
+        </ion-tab-button>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #gudangTemplate>
+      <ion-tab-button tab="input_gudang" href="/tabs/input_gudang">
+        <ion-icon name="pencil-outline"></ion-icon>
+        <ion-label>Input Gudang</ion-label>
+      </ion-tab-button>
+    </ng-template>
+
+    <ion-tab-button tab="riwayat" href="/tabs/riwayat">
+      <ion-icon name="newspaper-outline"></ion-icon>
+      <ion-label>Riwayat</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="profile" href="/tabs/profile">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Profil</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

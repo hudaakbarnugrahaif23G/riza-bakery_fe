@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Beranda</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h4>Selamat datang {{ userName }}</h4>
+
+  <h5 *ngIf="role === 'produksi'">Ini grafik produksi</h5>
+  <h5 *ngIf="role === 'qc'">Ini grafik qc</h5>
+
+  <div *ngIf="role === 'gudang'">
+    <ion-card
+      *ngFor="let material of materials"
+      [color]="material.stock >= material.minimum_stock ? 'primary' : 'danger'"
+    >
+      <ion-card-header>
+        <ion-card-title>
+          {{ material.stock }} / {{ material.minimum_stock }} {{ material.unit
+          }}
+        </ion-card-title>
+        <ion-card-subtitle>{{ material.material_name }}</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</ion-content>
