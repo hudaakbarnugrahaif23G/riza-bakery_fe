@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { ApiService } from '../services/api.service';
 
@@ -14,71 +12,93 @@ import { ApiService } from '../services/api.service';
 })
 export class ProductionEditPage implements OnInit {
   productionForm: FormGroup;
+  productionData: any[] = [];
+  line_id: string = '';
+  shift_id: string = '';
+  date: string = '';
 
-  constructor( 
+  constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router,
     private location: Location,
     private api: ApiService
   ) {
-      this.productionForm = this.fb.group({
-        shift: [''],
-        date: [''],
-        line: [''],
-        pic: [''],
-        cycle_time: [''],
-        target: [''],
-      });
-    }
+    this.productionForm = this.fb.group({
+      shift: [''],
+      date: [''],
+      line: [''],
+      pic: [''],
+      cycle_time: [''],
+      target: [''],
+    });
+  }
 
   ngOnInit() {
-    const line_id = this.route.snapshot.paramMap.get('line_id');
-    const shift_id = this.route.snapshot.paramMap.get('shift_id');
-    const date = this.route.snapshot.paramMap.get('date');
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    // Set shift, date, line
-    this.productionForm.patchValue({
-      date: date,
-      pic: user.name || ''
+    // Ambil dari queryParams (bukan paramMap)
+    this.route.queryParams.subscribe(params => {
+      this.line_id = params['line_id'] || '';
+      this.shift_id = params['shift_id'] || '';
+      this.date = params['date'] || '';
+
+      this.loadAllData();
     });
-  
-    // Ambil detail shift
+  }
+
+  loadAllData() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    // Set form awal
+    this.productionForm.patchValue({
+      date: this.date,
+      pic: user.name || '',
+    });
+
+    // Get shift info
     this.api.get<any>('shift/get_data').subscribe({
       next: (res) => {
-        const shifts = res.data ?? [];
-        const selectedShift = shifts.find((s: any) => s.id == shift_id);
-        if (selectedShift) {
-          this.productionForm.patchValue({
-            shift: selectedShift.name
-          });
+        const selected = res.data?.find((s: any) => s.id == this.shift_id);
+        if (selected) {
+          this.productionForm.patchValue({ shift: selected.name });
         }
       },
-      error: (err) => {
-        console.error('Gagal ambil data shift:', err);
-      }
+      error: (err) => console.error('Gagal ambil shift:', err),
     });
-  
-    // Ambil detail line
+
+    // Get line info
     this.api.get<any>('line/get_data').subscribe({
       next: (res) => {
-        const lines = res.data ?? [];
-        const selectedLine = lines.find((l: any) => l.id == line_id);
-        if (selectedLine) {
+        const selected = res.data?.find((l: any) => l.id == this.line_id);
+        if (selected) {
           this.productionForm.patchValue({
-            cycle_time: selectedLine.cycle_time,
-            target: selectedLine.target,
-            line: selectedLine.line_name,
+            cycle_time: selected.cycle_time,
+            target: selected.target,
+            line: selected.line_name,
           });
         }
       },
+      error: (err) => console.error('Gagal ambil line:', err),
+    });
+
+    // Get data produksi
+    this.getProductionData();
+  }
+
+  getProductionData() {
+    const params = `?line_id=${this.line_id}&shift_id=${this.shift_id}&date=${this.date}`;
+    this.api.get<any>('production/get_data' + params).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.productionData = res.data;
+        } else {
+          console.warn('Gagal ambil data produksi:', res.message);
+        }
+      },
       error: (err) => {
-        console.error('Gagal ambil data line:', err);
+        console.error('Error ambil data produksi:', err);
       }
     });
   }
+
   goBack() {
     this.location.back();
   }

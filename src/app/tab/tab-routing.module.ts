@@ -25,6 +25,10 @@ const routes: Routes = [
           {
             path: 'production-edit',
             loadChildren: () => import('../production-edit/production-edit.module').then(m => m.ProductionEditPageModule)
+          },
+          {
+            path: 'production-entry',
+            loadChildren: () => import('../production-entry/production-entry.module').then(m => m.ProductionEntryPageModule)
           }
         ]
       },

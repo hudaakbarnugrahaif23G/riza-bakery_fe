@@ -39,9 +39,32 @@ export class InputGudangPage implements OnInit {
   }
 
   submit() {
-    console.log('Material ID:', this.selectedMaterialId);
-    console.log('Stock In:', this.stockIn);
-    // Kirim data POST jika diperlukan
+    if (!this.selectedMaterialId || !this.stockIn || this.stockIn <= 0) {
+      console.warn('Material dan stock harus diisi dengan benar.');
+      return;
+    }
+  
+    const body = {
+      material_id: this.selectedMaterialId,
+      qty: this.stockIn,
+      status: 'in'
+    };
+  
+    this.api.post<any>('materialstock/store', body).subscribe({
+      next: (res) => {
+        if (res.success) {
+          console.log('Stok berhasil ditambahkan:', res);
+          // Reset form atau tampilkan notifikasi
+          this.selectedMaterialId = null;
+          this.stockIn = null;
+        } else {
+          console.error('Gagal menambahkan stok:', res);
+        }
+      },
+      error: (err) => {
+        console.error('Terjadi kesalahan saat submit:', err);
+      }
+    });
   }
 
   ngOnInit() {

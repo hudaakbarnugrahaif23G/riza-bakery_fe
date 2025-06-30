@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Entry Data Production</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="ion-margin-start">
+    <ion-button color="medium" size="small" (click)="goBack()">
+      <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+      Back
+    </ion-button>
+  </div>
+
+  <!-- Info Produksi -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Informasi Produksi</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Shift</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.shift?.name || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>Date</ion-label>
+          <ion-note slot="end">{{ productionItem?.date || '-' }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Line</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.line?.line_name || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>PIC</ion-label>
+          <ion-note slot="end">{{ user?.name || '-' }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Cycle Time</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.line?.cycle_time || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>Target Per jam</ion-label>
+          <ion-note slot="end">{{ productionItem?.plan_qty || '-' }}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Input Produksi -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Input Hasil Produksi</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">OK Qty</ion-label>
+        <ion-input type="number" [(ngModel)]="okQty" name="okQty"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">NG Qty</ion-label>
+        <ion-input type="number" [(ngModel)]="ngQty" name="ngQty"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Catatan</ion-label>
+        <ion-input type="text" [(ngModel)]="note" name="note"></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Material Stock Out -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Material Stock Out</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div *ngFor="let stock of materialStocks; let i = index">
+        <!-- Dropdown Material -->
+        <ion-item>
+          <ion-label>Material</ion-label>
+          <ion-select
+            [(ngModel)]="materialStocks[i].material_id"
+            [name]="'material_' + i"
+            placeholder="Pilih Material"
+          >
+            <ion-select-option *ngFor="let m of materialList" [value]="m.id">
+              {{ m.material_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Qty -->
+        <ion-item>
+          <ion-label position="stacked">Qty</ion-label>
+          <ion-input
+            [(ngModel)]="materialStocks[i].qty"
+            [name]="'qty_' + i"
+            type="number"
+            placeholder="Jumlah keluar"
+          ></ion-input>
+        </ion-item>
+
+        <div class="ion-text-end">
+          <ion-button color="danger" size="small" (click)="removeMaterial(i)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Hapus
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Tombol Tambah -->
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="primary"
+        (click)="addMaterial()"
+      >
+        + Tambah Material
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Submit -->
+  <div class="ion-text-end ion-padding">
+    <ion-button
+      color="success"
+      (click)="submit()"
+      [disabled]="!productionItem || isSubmitting"
+    >
+      <ion-spinner *ngIf="isSubmitting" name="dots" slot="start"></ion-spinner>
+      Submit
+    </ion-button>
+  </div>
+</ion-content>

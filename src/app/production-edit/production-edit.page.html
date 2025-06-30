@@ -80,38 +80,38 @@
                 </th>
                 <th style="border: 1px solid #ccc; padding: 8px">Prod Qty</th>
                 <th style="border: 1px solid #ccc; padding: 8px">NG Qty</th>
-                <th style="border: 1px solid #ccc; padding: 8px">
-                  Production Time
-                </th>
                 <th style="border: 1px solid #ccc; padding: 8px">Efficiency</th>
                 <th style="border: 1px solid #ccc; padding: 8px">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Roti Coklat</td>
-                <td>06:00 - 07:00</td>
-                <td>20</td>
-                <td>60</td>
-                <td>59</td>
-                <td>1</td>
-                <td>60</td>
-                <td>100%</td>
+              <tr *ngFor="let item of productionData">
+                <td>{{ item.line.line_name }}</td>
+                <td>{{ item.production_start }} - {{ item.production_end }}</td>
+                <td>{{ item.cctime }}</td>
+                <td>{{ item.plan_qty }}</td>
+                <td>{{ item.ok }}</td>
+                <td>{{ item.ng }}</td>
                 <td>
-                  <ion-button color="primary" size="small">Edit</ion-button>
+                  {{ item.ok + item.ng === 0 ? '0%' : ((item.ok / (item.ok +
+                  item.ng)) * 100) | number: '1.0-0' }} %
                 </td>
-              </tr>
-              <tr>
-                <td>Roti Coklat</td>
-                <td>07:00 - 08:00</td>
-                <td>20</td>
-                <td>60</td>
-                <td>59</td>
-                <td>1</td>
-                <td>60</td>
-                <td>100%</td>
                 <td>
-                  <ion-button color="primary" size="small">Edit</ion-button>
+                  <ion-button
+                    size="small"
+                    color="primary"
+                    [routerLink]="[
+                      '/tabs/input/production-entry',
+                      {
+                        line_id: item.line_id,
+                        shift_id: item.shift_id,
+                        date: item.date,
+                        item_id: item.id
+                      }
+                    ]"
+                  >
+                    Edit
+                  </ion-button>
                 </td>
               </tr>
             </tbody>

@@ -126,11 +126,13 @@ export class InputPage implements OnInit {
     
     if (line.exists) {
       // Edit Production Data
-      this.router.navigate(['/tabs/input/production-edit', {
-        line_id: line.id,
-        shift_id,
-        date
-      }]);
+      this.router.navigate(['/tabs/input/production-edit'], {
+  queryParams: {
+    line_id: line.id,
+    shift_id,
+    date
+  }
+});
     } else {
       // Generate Production Data
       this.router.navigate(['/tabs/input/production-generate', {
