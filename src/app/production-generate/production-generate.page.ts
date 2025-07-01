@@ -15,6 +15,7 @@ import { ApiService } from '../services/api.service';
 export class ProductionGeneratePage implements OnInit {
 
   productionForm: FormGroup;
+  materials: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +41,7 @@ export class ProductionGeneratePage implements OnInit {
     const date = this.route.snapshot.paramMap.get('date');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
+    this.getMaterialFinishGoodData();
     // Set shift, date, pic
     this.productionForm.patchValue({
       date: date,
@@ -88,7 +90,8 @@ export class ProductionGeneratePage implements OnInit {
       shift_id: this.route.snapshot.paramMap.get('shift_id'),
       date: this.route.snapshot.paramMap.get('date'),
       line_id: this.route.snapshot.paramMap.get('line_id'),
-      user_id: user.id
+      user_id: user.id,
+      material: this.productionForm.get('material')?.value || '',
     };
   
     this.api.post<any>('production/generate', body).subscribe({
@@ -97,7 +100,8 @@ export class ProductionGeneratePage implements OnInit {
           this.router.navigate(['/tabs/input/production-edit', {
             line_id: body.line_id,
             shift_id: body.shift_id,
-            date: body.date
+            date: body.date,
+            material_id: res.data.material_id,
           }]);
         } else {
           console.error('Gagal generate production:', res);
@@ -111,5 +115,16 @@ export class ProductionGeneratePage implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  getMaterialFinishGoodData() {
+    this.api.get<any>('material/get_data_finish_good').subscribe({
+      next: (res) => {
+        this.materials = res.data ?? res;
+      },
+      error: (err) => {
+        console.error('Gagal mengambil data material:', err);
+      }
+    });
   }
 }

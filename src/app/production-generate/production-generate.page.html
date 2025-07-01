@@ -23,8 +23,6 @@
           readonly
         ></ion-input>
 
-        <br />
-
         <ion-input
           formControlName="date"
           label="Date"
@@ -33,8 +31,6 @@
           placeholder="Enter text"
           readonly
         ></ion-input>
-
-        <br />
 
         <ion-input
           formControlName="line"
@@ -45,8 +41,6 @@
           readonly
         ></ion-input>
 
-        <br />
-
         <ion-input
           formControlName="pic"
           label="PIC"
@@ -56,8 +50,6 @@
           readonly
         ></ion-input>
 
-        <br />
-
         <ion-input
           formControlName="cycle_time"
           label="Cycle Time"
@@ -66,8 +58,6 @@
           placeholder="Enter text"
           readonly
         ></ion-input>
-
-        <br />
 
         <ion-input
           formControlName="target"
@@ -79,6 +69,20 @@
         ></ion-input>
 
         <br />
+        <ion-item>
+          <ion-select
+            label="Material"
+            placeholder="Pilih Material"
+            formControlName="material"
+          >
+            <ion-select-option
+              *ngFor="let material of materials"
+              [value]="material.id"
+            >
+              {{ material.material_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
 
         <div class="ion-text-end">
           <ion-button color="success" (click)="submitProduction()"

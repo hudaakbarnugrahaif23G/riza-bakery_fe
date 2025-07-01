@@ -36,6 +36,10 @@
         </ion-item>
 
         <br />
+        <ion-button expand="full" (click)="refreshData()"
+          >Refresh Data</ion-button
+        >
+        <br />
         <!-- Tombol-tombol Line -->
         <ion-label class="ion-margin-top">Pilih Line Produksi:</ion-label>
         <div *ngFor="let line of lines" class="ion-margin-top">
@@ -56,10 +60,6 @@
         >
           Line ID terpilih: {{ productionForm.get('productionLine')?.value }}
         </ion-text>
-        <br />
-        <ion-button expand="full" (click)="refreshData()"
-          >Refresh Data</ion-button
-        >
       </form>
     </ion-card-content>
   </ion-card>
