@@ -1,5 +1,7 @@
 {
   "name": "riza-bakery_fe",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

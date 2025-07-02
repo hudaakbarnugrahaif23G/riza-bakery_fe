@@ -68,22 +68,6 @@
           readonly
         ></ion-input>
 
-        <br />
-        <ion-item>
-          <ion-select
-            label="Material"
-            placeholder="Pilih Material"
-            formControlName="material"
-          >
-            <ion-select-option
-              *ngFor="let material of materials"
-              [value]="material.id"
-            >
-              {{ material.material_name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-
         <div class="ion-text-end">
           <ion-button color="success" (click)="submitProduction()"
             >Generate</ion-button

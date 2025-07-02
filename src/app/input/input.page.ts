@@ -17,6 +17,8 @@ export class InputPage implements OnInit {
   selectedDate: string = new Date().toISOString();
   shifts: any[] = [];
   lines: any[] = [];
+  role: string = '';
+  userName: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -24,6 +26,9 @@ export class InputPage implements OnInit {
     private router: Router,
     private api: ApiService
   ) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.userName = user.name || 'User';
+    this.role = user.role || '';
     this.productionForm = this.fb.group({
       productionDate: [null, Validators.required],
       shift: [null, Validators.required],
@@ -123,23 +128,38 @@ export class InputPage implements OnInit {
     const rawDate = this.productionForm.get('productionDate')?.value;
     const date = new Date(rawDate).toISOString().split('T')[0];
     const shift_id = this.productionForm.get('shift')?.value;
-    
+
+    if (this.role === 'qc') {
+      // Arahkan ke halaman QC
+      this.router.navigate(['/tabs/input/production-edit'], {
+        queryParams: {
+          line_id: line.id,
+          shift_id,
+          date
+        }
+      });
+      return;
+    }
+
+    // Jika bukan QC, lanjutkan ke produksi
     if (line.exists) {
       // Edit Production Data
       this.router.navigate(['/tabs/input/production-edit'], {
-  queryParams: {
-    line_id: line.id,
-    shift_id,
-    date
-  }
-});
+        queryParams: {
+          line_id: line.id,
+          shift_id,
+          date
+        }
+      });
     } else {
       // Generate Production Data
-      this.router.navigate(['/tabs/input/production-generate', {
-        line_id: line.id,
-        shift_id,
-        date
-      }]);
+      this.router.navigate(['/tabs/input/production-generate'], {
+        queryParams: {
+          line_id: line.id,
+          shift_id,
+          date
+        }
+      });
     }
   }
 }

@@ -11,8 +11,22 @@
   <h5 *ngIf="role === 'qc'">Ini grafik qc</h5>
 
   <div *ngIf="role === 'gudang'">
+    <h5>Bahan Baku</h5>
     <ion-card
       *ngFor="let material of materials"
+      [color]="material.stock >= material.minimum_stock ? 'primary' : 'danger'"
+    >
+      <ion-card-header>
+        <ion-card-title>
+          {{ material.stock }} / {{ material.minimum_stock }} {{ material.unit
+          }}
+        </ion-card-title>
+        <ion-card-subtitle>{{ material.material_name }}</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+    <h5>Barang Jadi</h5>
+    <ion-card
+      *ngFor="let material of fgs"
       [color]="material.stock >= material.minimum_stock ? 'primary' : 'danger'"
     >
       <ion-card-header>

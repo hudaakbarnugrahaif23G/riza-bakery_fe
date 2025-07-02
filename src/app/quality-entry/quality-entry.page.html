@@ -1,0 +1,118 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Entry Quality Inspection</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="ion-margin-start">
+    <ion-button color="medium" size="small" (click)="goBack()">
+      <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+      Back
+    </ion-button>
+  </div>
+
+  <!-- Info Produksi -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Informasi Produksi</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Shift</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.shift?.name || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>Date</ion-label>
+          <ion-note slot="end">{{ productionItem?.date || '-' }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Start</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.production_start || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>End</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.production_end || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>Line</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.line?.line_name || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>PIC</ion-label>
+          <ion-note slot="end">{{ user?.name || '-' }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>Cycle Time</ion-label>
+          <ion-note slot="end"
+            >{{ productionItem?.line?.cycle_time || '-' }}</ion-note
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>Target Per jam</ion-label>
+          <ion-note slot="end">{{ productionItem?.plan_qty || '-' }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>OK</ion-label>
+          <ion-note slot="end">{{ productionItem?.ok || '-' }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>NG</ion-label>
+          <ion-note slot="end">{{ productionItem?.ng || '-' }}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Input Quality -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Input Quality Inspection</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- Select Judgement -->
+      <ion-item>
+        <ion-select
+          [(ngModel)]="judgement"
+          name="judgement"
+          interface="popover"
+          placeholder="Pilih Judgement"
+        >
+          <ion-select-option value="ok">OK</ion-select-option>
+          <ion-select-option value="ng">NG</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Corrective Action -->
+      <ion-item>
+        <ion-label position="floating">Corrective Action</ion-label>
+        <ion-input
+          type="text"
+          [(ngModel)]="corrective_action"
+          name="corrective_action"
+        ></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Submit -->
+  <div class="ion-text-end ion-padding">
+    <ion-button
+      color="success"
+      (click)="submit()"
+      [disabled]="!productionItem || isSubmitting"
+    >
+      <ion-spinner *ngIf="isSubmitting" name="dots" slot="start"></ion-spinner>
+      Submit
+    </ion-button>
+  </div>
+</ion-content>

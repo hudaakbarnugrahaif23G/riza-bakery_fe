@@ -47,14 +47,19 @@ export class ProductionEntryPage implements OnInit {
   }
 
   ngOnInit() {
-    this.item_id = this.route.snapshot.paramMap.get('item_id') || '';
-    this.line_id = this.route.snapshot.paramMap.get('line_id') || '';
-    this.shift_id = this.route.snapshot.paramMap.get('shift_id') || '';
-    this.date = this.route.snapshot.paramMap.get('date') || '';
-    this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.route.queryParamMap.subscribe((params) => {
+      this.item_id = params.get('item_id') || '';
+      this.line_id = params.get('line_id') || '';
+      this.shift_id = params.get('shift_id') || '';
+      this.date = params.get('date') || '';
+        
+      console.log('Item ID:', this.item_id);
+      this.getProductionData();
+    });
 
+    this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    
     this.getMaterialList();
-    this.getProductionData();
   }
 
   goBack() {

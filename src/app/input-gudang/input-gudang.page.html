@@ -23,8 +23,6 @@
         </ion-select>
       </ion-item>
 
-      <br />
-
       <ion-input
         label="Tambah stock"
         label-placement="floating"
@@ -36,6 +34,50 @@
 
       <div class="ion-text-end">
         <ion-button color="success" (click)="submit()">Submit</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Kirim Barang</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-select
+          label="Produk"
+          placeholder="Pilih"
+          [(ngModel)]="selectedMaterialId"
+        >
+          <ion-select-option *ngFor="let item of fgs" [value]="item.id">
+            {{ item.material_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-input
+        label="Total Produk"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Enter stock out"
+        [(ngModel)]="stockOut"
+        type="number"
+      ></ion-input>
+
+      <ion-input
+        label="Destinasi"
+        label-placement="floating"
+        fill="outline"
+        placeholder="Enter Destination"
+        [(ngModel)]="destination"
+        type="text"
+      ></ion-input>
+
+      <div class="ion-text-end">
+        <ion-button color="success" (click)="submitDelivery()"
+          >Submit</ion-button
+        >
       </div>
     </ion-card-content>
   </ion-card>

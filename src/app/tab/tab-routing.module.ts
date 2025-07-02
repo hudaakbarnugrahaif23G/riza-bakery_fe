@@ -29,7 +29,15 @@ const routes: Routes = [
           {
             path: 'production-entry',
             loadChildren: () => import('../production-entry/production-entry.module').then(m => m.ProductionEntryPageModule)
-          }
+          },
+          {
+            path: 'quality-edit',
+            loadChildren: () => import('../quality-edit/quality-edit.module').then( m => m.QualityEditPageModule)
+          },
+          {
+            path: 'quality-entry',
+            loadChildren: () => import('../quality-entry/quality-entry.module').then( m => m.QualityEntryPageModule)
+          },
         ]
       },
       {
@@ -52,7 +60,16 @@ const routes: Routes = [
       },
       {
         path: 'riwayat',
-        loadChildren: () => import('../riwayat/riwayat.module').then(m => m.RiwayatPageModule)
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../riwayat/riwayat.module').then(m => m.RiwayatPageModule)
+          },
+          {
+            path: 'production-history',
+            loadChildren: () => import('../production-history/production-history.module').then(m => m.ProductionHistoryPageModule)
+          }
+        ]
       },
       {
         path: 'profile',

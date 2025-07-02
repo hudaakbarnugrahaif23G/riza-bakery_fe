@@ -101,14 +101,16 @@
                     size="small"
                     color="primary"
                     [routerLink]="[
-                      '/tabs/input/production-entry',
-                      {
-                        line_id: item.line_id,
-                        shift_id: item.shift_id,
-                        date: item.date,
-                        item_id: item.id
-                      }
+                      role === 'qc'
+                        ? '/tabs/input/quality-entry'
+                        : '/tabs/input/production-entry'
                     ]"
+                    [queryParams]="{
+                      line_id: item.line_id,
+                      shift_id: item.shift_id,
+                      date: item.date,
+                      item_id: item.id
+                    }"
                   >
                     Edit
                   </ion-button>

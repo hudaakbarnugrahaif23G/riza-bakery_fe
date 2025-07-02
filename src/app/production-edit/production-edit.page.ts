@@ -16,6 +16,7 @@ export class ProductionEditPage implements OnInit {
   line_id: string = '';
   shift_id: string = '';
   date: string = '';
+  role: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -34,7 +35,8 @@ export class ProductionEditPage implements OnInit {
   }
 
   ngOnInit() {
-    // Ambil dari queryParams (bukan paramMap)
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.role = user.role;
     this.route.queryParams.subscribe(params => {
       this.line_id = params['line_id'] || '';
       this.shift_id = params['shift_id'] || '';

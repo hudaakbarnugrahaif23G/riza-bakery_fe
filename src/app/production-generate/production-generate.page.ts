@@ -13,9 +13,9 @@ import { ApiService } from '../services/api.service';
   standalone: false,
 })
 export class ProductionGeneratePage implements OnInit {
-
   productionForm: FormGroup;
   materials: any[] = [];
+  selectedLine: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,11 +69,14 @@ export class ProductionGeneratePage implements OnInit {
       next: (res) => {
         const lines = res.data ?? [];
         const selectedLine = lines.find((l: any) => l.id == line_id);
+        console.log('Selected Line:', selectedLine);
         if (selectedLine) {
+          this.selectedLine = selectedLine; 
           this.productionForm.patchValue({
             cycle_time: selectedLine.cycle_time,
             target: selectedLine.target,
             line: selectedLine.line_name,
+            material_id: selectedLine.material_id,
           });
         }
       },
@@ -85,24 +88,25 @@ export class ProductionGeneratePage implements OnInit {
   
   submitProduction() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-  
+    
     const body = {
       shift_id: this.route.snapshot.paramMap.get('shift_id'),
       date: this.route.snapshot.paramMap.get('date'),
       line_id: this.route.snapshot.paramMap.get('line_id'),
       user_id: user.id,
-      material: this.productionForm.get('material')?.value || '',
+      material_id: this.selectedLine.material_id,
     };
-  
+
     this.api.post<any>('production/generate', body).subscribe({
       next: (res) => {
         if (res.success) {
-          this.router.navigate(['/tabs/input/production-edit', {
-            line_id: body.line_id,
-            shift_id: body.shift_id,
-            date: body.date,
-            material_id: res.data.material_id,
-          }]);
+          this.router.navigate(['/tabs/input/production-edit'], {
+            queryParams: {
+              line_id: body.line_id,
+              shift_id: body.shift_id,
+              date: body.date
+            }
+          });
         } else {
           console.error('Gagal generate production:', res);
         }

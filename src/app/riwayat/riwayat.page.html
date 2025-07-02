@@ -1,13 +1,93 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>Ini Riwayat</ion-title>
+    <ion-title>Riwayat</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">riwayat</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <div *ngIf="role === 'produksi'">
+    Riwayat Produksi
+    <div class="table-responsive">
+      <table class="table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ccc; padding: 8px">Line</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Hour</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Cycle Time</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Planning Qty</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Prod Qty</th>
+            <th style="border: 1px solid #ccc; padding: 8px">NG Qty</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Efficiency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of productionData">
+            <td>{{ item.line.line_name }}</td>
+            <td>{{ item.production_start }} - {{ item.production_end }}</td>
+            <td>{{ item.cctime }}</td>
+            <td>{{ item.plan_qty }}</td>
+            <td>{{ item.ok }}</td>
+            <td>{{ item.ng }}</td>
+            <td>
+              {{ item.ok + item.ng === 0 ? '0%' : ((item.ok / (item.ok +
+              item.ng)) * 100) | number: '1.0-0' }} %
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="role === 'qc'">
+    Riwayat Quality
+    <div class="table-responsive">
+      <table class="table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ccc; padding: 8px">Line</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Hour</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Judgement</th>
+            <th style="border: 1px solid #ccc; padding: 8px">
+              Corrective Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of qualityData">
+            <td>{{ item.production_data.line.line_name }}</td>
+            <td>
+              {{ item.production_data.production_start }} - {{
+              item.production_data.production_end }}
+            </td>
+            <td>{{ item.judgement }}</td>
+            <td>{{ item.corrective_action }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="role === 'gudang'">
+    Riwayat Gudang
+    <div class="table-responsive">
+      <table class="table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ccc; padding: 8px">Tanggal/Waktu</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Material</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Quantity</th>
+            <th style="border: 1px solid #ccc; padding: 8px">Tipe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of gudangData">
+            <td>{{ item.created_at | date: 'yyyy-MM-dd HH:mm' }}</td>
+            <td>{{ item.material.material_name }}</td>
+            <td>{{ item.qty }}</td>
+            <td>{{ item.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </ion-content>

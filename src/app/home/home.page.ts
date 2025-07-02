@@ -14,6 +14,7 @@ export class HomePage implements OnInit {
   userName: string = 'User';
   role: string = '';
   materials: any[] = [];
+  fgs: any[] = [];
   private refreshSub!: Subscription;
   constructor(
     private router: Router, 
@@ -37,9 +38,11 @@ export class HomePage implements OnInit {
 
     if (this.role === 'gudang') {
       this.loadMaterials();
+      this.loadFinishGoods();
 
       this.refreshSub = interval(5000).subscribe(() => {
         this.loadMaterials();
+        this.loadFinishGoods();
       });
     }
   }
@@ -50,6 +53,20 @@ export class HomePage implements OnInit {
         next: (res) => {
           if (res.success) {
             this.materials = res.data;
+          }
+        },
+        error: (err) => {
+          console.error('Failed to load materials', err);
+        }
+      });
+  }
+
+  loadFinishGoods() {
+    this.api.get<any>('material/get_data_finish_good')
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.fgs = res.data;
           }
         },
         error: (err) => {

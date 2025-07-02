@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// const API_BASE_URL = 'http://127.0.0.1:8000/api';
-const API_BASE_URL = 'https://riza-bakery.my.id/api';
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// const API_BASE_URL = 'https://riza-bakery.my.id/api';
 
 @Injectable({
   providedIn: 'root'
@@ -25,4 +25,9 @@ export class ApiService {
   post<T>(endpoint: string, body: any): Observable<T> {
     return this.http.post<T>(`${API_BASE_URL}/${endpoint}`, body, { headers: this.getHeaders() });
   }
+
+  put<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.put<T>(`${API_BASE_URL}/${endpoint}`, body, { headers: this.getHeaders() });
+  }
+
 }
