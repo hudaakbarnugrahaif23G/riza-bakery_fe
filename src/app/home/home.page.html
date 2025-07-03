@@ -9,14 +9,21 @@
 
   <ion-card *ngIf="role === 'produksi'">
     <ion-card-header>
-      <ion-card-title>Grafik Efisiensi Produksi</ion-card-title>
+      <ion-card-title>Grafik Efisiensi Produksi Hari ini</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <canvas id="efficiencyChart"></canvas>
     </ion-card-content>
   </ion-card>
 
-  <h5 *ngIf="role === 'qc'">Ini grafik qc</h5>
+  <ion-card *ngIf="role === 'qc'">
+    <ion-card-header>
+      <ion-card-title>Grafik Pemeriksaan QC</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas id="qcPieChart"></canvas>
+    </ion-card-content>
+  </ion-card>
 
   <div *ngIf="role === 'gudang'">
     <h5>Bahan Baku</h5>

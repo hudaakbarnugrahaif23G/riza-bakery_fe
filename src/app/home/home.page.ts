@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { AfterViewInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -90,10 +91,12 @@ export class HomePage implements OnInit, AfterViewInit  {
     }
   }
 ngAfterViewInit(): void {
-    if (this.role === 'produksi') {
-      this.loadEfficiencyData();
-    }
+  if (this.role === 'produksi') {
+    this.loadEfficiencyData();
+  } else if (this.role === 'qc') {
+    this.loadQcPieData();
   }
+}
   
  loadEfficiencyData() {
   this.api.get<any[]>('dashboard/efficiency-data').subscribe({
@@ -168,6 +171,57 @@ renderEfficiencyChart(labels: string[], values: number[]) {
     }
   });
 }
+
+loadQcPieData() {
+  this.api.get<any>('dashboard-quality').subscribe({
+    next: (res) => {
+      if (res.success) {
+        const ok = res.data.ok || 0;
+        const ng = res.data.ng || 0;
+        this.renderQcPieChart(ok, ng);
+      }
+    },
+    error: (err) => {
+      console.error('❌ Gagal ambil data QC:', err);
+    }
+  });
+}
+
+renderQcPieChart(ok: number, ng: number) {
+  const canvas = document.getElementById('qcPieChart') as HTMLCanvasElement;
+  if (!canvas) return;
+
+  new Chart(canvas, {
+    type: 'pie',
+    data: {
+      labels: ['OK', 'NG'],
+      datasets: [{
+        data: [ok, ng],
+        backgroundColor: ['#28a745', '#dc3545'], // Hijau & Merah
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const label = context.label || '';
+              const value = context.raw || 0;
+              return `${label}: ${value} pcs`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+
 
 
 }
