@@ -7,7 +7,15 @@
 <ion-content class="ion-padding">
   <h4>Selamat datang {{ userName }}</h4>
 
-  <h5 *ngIf="role === 'produksi'">Ini grafik produksi</h5>
+  <ion-card *ngIf="role === 'produksi'">
+    <ion-card-header>
+      <ion-card-title>Grafik Efisiensi Produksi</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <canvas id="efficiencyChart"></canvas>
+    </ion-card-content>
+  </ion-card>
+
   <h5 *ngIf="role === 'qc'">Ini grafik qc</h5>
 
   <div *ngIf="role === 'gudang'">

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subscription, interval } from 'rxjs';
 import { ApiService } from '../services/api.service';
+import { Component, OnInit } from '@angular/core';
+import Chart from 'chart.js/auto';
+import { AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +12,7 @@ import { ApiService } from '../services/api.service';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, AfterViewInit  {
   userName: string = 'User';
   role: string = '';
   materials: any[] = [];
@@ -37,14 +39,16 @@ export class HomePage implements OnInit {
     this.role = user.role || '';
 
     if (this.role === 'gudang') {
-      this.loadMaterials();
-      this.loadFinishGoods();
+  this.loadMaterials();
+  this.loadFinishGoods();
+  this.refreshSub = interval(5000).subscribe(() => {
+    this.loadMaterials();
+    this.loadFinishGoods();
+  });
+} else if (this.role === 'produksi') {
+  setTimeout(() => this.loadEfficiencyData(), 500); // agar canvas sudah render
+}
 
-      this.refreshSub = interval(5000).subscribe(() => {
-        this.loadMaterials();
-        this.loadFinishGoods();
-      });
-    }
   }
 
   loadMaterials() {
@@ -85,4 +89,85 @@ export class HomePage implements OnInit {
       this.refreshSub.unsubscribe();
     }
   }
+ngAfterViewInit(): void {
+    if (this.role === 'produksi') {
+      this.loadEfficiencyData();
+    }
+  }
+  
+ loadEfficiencyData() {
+  this.api.get<any[]>('dashboard/efficiency-data').subscribe({
+    next: (data) => {
+      if (data.length > 0) {
+        const line = data[0]; // ambil hanya 1 line (ROTI001)
+        const hours = line.hours;
+        const ok = line.ok_values;
+        const plan = line.plan_values;
+
+        // hitung efisiensi
+        const efficiency = plan.map((p: number, i: number) => {
+          if (p === 0) return 0;
+          return Math.round((ok[i] / p) * 100);
+        });
+
+        this.renderEfficiencyChart(hours, efficiency);
+      }
+    },
+    error: (err) => {
+      console.error('❌ Gagal ambil data efisiensi:', err);
+    }
+  });
+}
+
+renderEfficiencyChart(labels: string[], values: number[]) {
+  const canvas: any = document.getElementById('efficiencyChart');
+  if (!canvas) return;
+
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Efisiensi per Jam',
+          data: values,
+          fill: true,
+          tension: 0.4,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          pointBackgroundColor: 'white',
+          pointBorderColor: 'rgba(75, 192, 192, 1)'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Efisiensi (%)'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Jam'
+          }
+        }
+      },
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      }
+    }
+  });
+}
+
+
 }
