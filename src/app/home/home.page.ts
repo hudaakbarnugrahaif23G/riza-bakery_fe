@@ -18,6 +18,9 @@ export class HomePage implements OnInit, AfterViewInit  {
   role: string = '';
   materials: any[] = [];
   fgs: any[] = [];
+  efficiencyChart: any;
+  qcChart: any;
+
   private refreshSub!: Subscription;
   constructor(
     private router: Router, 
@@ -49,6 +52,18 @@ export class HomePage implements OnInit, AfterViewInit  {
 } else if (this.role === 'produksi') {
   setTimeout(() => this.loadEfficiencyData(), 500); // agar canvas sudah render
 }
+if (this.role === 'produksi') {
+  this.loadEfficiencyData();
+  this.refreshSub = interval(5000).subscribe(() => {
+    this.loadEfficiencyData();
+  });
+} else if (this.role === 'qc') {
+  this.loadQcPieData();
+  this.refreshSub = interval(5000).subscribe(() => {
+    this.loadQcPieData();
+  });
+}
+
 
   }
 
@@ -85,11 +100,12 @@ export class HomePage implements OnInit, AfterViewInit  {
     this.userName = user.name || 'User';
   }
 
-  ngOnDestroy() {
-    if (this.refreshSub) {
-      this.refreshSub.unsubscribe();
-    }
+ ngOnDestroy() {
+  if (this.refreshSub) {
+    this.refreshSub.unsubscribe();
   }
+}
+
 ngAfterViewInit(): void {
   if (this.role === 'produksi') {
     this.loadEfficiencyData();
@@ -126,12 +142,18 @@ renderEfficiencyChart(labels: string[], values: number[]) {
   const canvas: any = document.getElementById('efficiencyChart');
   if (!canvas) return;
 
-  new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
+  if (this.efficiencyChart) {
+    // update chart
+    this.efficiencyChart.data.labels = labels;
+    this.efficiencyChart.data.datasets[0].data = values;
+    this.efficiencyChart.update();
+  } else {
+    // buat chart pertama kali
+    this.efficiencyChart = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
           label: 'Efisiensi per Jam',
           data: values,
           fill: true,
@@ -140,37 +162,38 @@ renderEfficiencyChart(labels: string[], values: number[]) {
           borderColor: 'rgba(75, 192, 192, 1)',
           pointBackgroundColor: 'white',
           pointBorderColor: 'rgba(75, 192, 192, 1)'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          min: 0,
-          max: 100,
-          title: {
-            display: true,
-            text: 'Efisiensi (%)'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Efisiensi (%)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Jam'
+            }
           }
         },
-        x: {
-          title: {
-            display: true,
-            text: 'Jam'
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            mode: 'index',
+            intersect: false
           }
         }
-      },
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: {
-          mode: 'index',
-          intersect: false
-        }
       }
-    }
-  });
+    });
+  }
 }
+
 
 loadQcPieData() {
   this.api.get<any>('dashboard-quality').subscribe({
@@ -191,37 +214,37 @@ renderQcPieChart(ok: number, ng: number) {
   const canvas = document.getElementById('qcPieChart') as HTMLCanvasElement;
   if (!canvas) return;
 
-  new Chart(canvas, {
-    type: 'pie',
-    data: {
-      labels: ['OK', 'NG'],
-      datasets: [{
-        data: [ok, ng],
-        backgroundColor: ['#28a745', '#dc3545'], // Hijau & Merah
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top'
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => {
-              const label = context.label || '';
-              const value = context.raw || 0;
-              return `${label}: ${value} pcs`;
+  if (this.qcChart) {
+    this.qcChart.data.datasets[0].data = [ok, ng];
+    this.qcChart.update();
+  } else {
+    this.qcChart = new Chart(canvas, {
+      type: 'pie',
+      data: {
+        labels: ['OK', 'NG'],
+        datasets: [{
+          data: [ok, ng],
+          backgroundColor: ['#28a745', '#dc3545'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                return `${label}: ${value} pcs`;
+              }
             }
           }
         }
       }
-    }
-  });
+    });
+  }
 }
-
-
-
 
 }
